@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <meta name="theme-color" content="#0f3d2e" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Llegadas" />
+    <meta
+      name="description"
+      content="Registro local de llegadas tarde. Sin servidor ni datos reales."
+    />
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png" />
+    <link rel="icon" type="image/svg+xml" href="./icons/icon.svg" />
+    <title>Llegadas tarde</title>
+    <link rel="stylesheet" href="./src/styles.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#busqueda">Saltar a búsqueda</a>
+
+    <header class="app-header">
+      <div class="brand-block">
+        <p class="brand">Llegadas</p>
+        <h1 class="title">Registro de tarde</h1>
+        <p class="subtitle" id="fecha-hoy" aria-live="polite"></p>
+      </div>
+      <button
+        type="button"
+        class="icon-btn"
+        id="btn-ajustes"
+        aria-label="Abrir ajustes e importar nómina"
+      >
+        Ajustes
+      </button>
+    </header>
+
+    <main class="app-main">
+      <section class="search-section" aria-labelledby="label-busqueda">
+        <label id="label-busqueda" class="field-label" for="busqueda"
+          >Buscar estudiante</label
+        >
+        <input
+          id="busqueda"
+          class="search-input"
+          type="search"
+          enterkeyhint="search"
+          autocomplete="off"
+          autocorrect="off"
+          spellcheck="false"
+          placeholder="Nombre o apellido…"
+          aria-describedby="ayuda-busqueda"
+        />
+        <p id="ayuda-busqueda" class="hint">
+          Escribe para filtrar la nómina local. Toca un nombre para registrar
+          la hora actual.
+        </p>
+        <ul
+          id="resultados"
+          class="result-list"
+          role="listbox"
+          aria-label="Resultados de búsqueda"
+        ></ul>
+        <p id="estado-busqueda" class="empty-state" hidden></p>
+      </section>
+
+      <section class="toast-region" aria-live="polite" aria-atomic="true">
+        <div id="toast" class="toast" hidden></div>
+      </section>
+
+      <section class="undo-bar" id="undo-bar" hidden>
+        <p id="undo-text"></p>
+        <button type="button" class="btn btn-secondary" id="btn-deshacer">
+          Deshacer
+        </button>
+      </section>
+
+      <section class="today-section" aria-labelledby="hoy-titulo">
+        <div class="section-head">
+          <h2 id="hoy-titulo">Hoy</h2>
+          <button
+            type="button"
+            class="btn btn-danger-ghost"
+            id="btn-limpiar-hoy"
+          >
+            Limpiar hoy
+          </button>
+        </div>
+
+        <div class="level-block">
+          <h3>Primaria</h3>
+          <ul id="lista-primaria" class="late-list"></ul>
+          <p id="vacio-primaria" class="empty-state">Sin registros</p>
+        </div>
+
+        <div class="level-block">
+          <h3>Secundaria</h3>
+          <ul id="lista-secundaria" class="late-list"></ul>
+          <p id="vacio-secundaria" class="empty-state">Sin registros</p>
+        </div>
+      </section>
+
+      <section class="reports-section" aria-labelledby="reportes-titulo">
+        <h2 id="reportes-titulo">Reportes WhatsApp</h2>
+        <p class="hint">
+          Textos listos para pegar. Se generan solo en este dispositivo.
+        </p>
+        <div class="report-actions">
+          <button type="button" class="btn btn-primary" id="btn-copiar-primaria">
+            Copiar primaria
+          </button>
+          <button
+            type="button"
+            class="btn btn-primary"
+            id="btn-copiar-secundaria"
+          >
+            Copiar secundaria
+          </button>
+        </div>
+        <details class="preview-details">
+          <summary>Vista previa de textos</summary>
+          <pre id="preview-primaria" class="report-preview"></pre>
+          <pre id="preview-secundaria" class="report-preview"></pre>
+        </details>
+      </section>
+    </main>
+
+    <dialog id="dialog-ajustes" class="sheet">
+      <form method="dialog" class="sheet-inner" id="form-ajustes">
+        <header class="sheet-header">
+          <h2>Ajustes</h2>
+          <button type="submit" class="icon-btn" value="close" aria-label="Cerrar">
+            Cerrar
+          </button>
+        </header>
+
+        <div class="sheet-body">
+          <section class="settings-block">
+            <h3>Importar nómina (CSV)</h3>
+            <p class="hint">
+              Columnas: <code>student_id</code>, <code>first_name</code>,
+              <code>last_name</code>, <code>grade</code>, <code>section</code>,
+              <code>level</code>. Alias aceptados (sin distinguir mayúsculas).
+              <code>level</code>: primary/primaria o secondary/secundaria.
+            </p>
+            <p class="hint">
+              Todo el análisis ocurre en el teléfono. No se envía nada a
+              internet.
+            </p>
+            <label class="file-label btn btn-secondary">
+              Elegir archivo CSV
+              <input
+                id="csv-input"
+                type="file"
+                accept=".csv,text/csv"
+                hidden
+              />
+            </label>
+            <div class="import-mode">
+              <label class="radio-row">
+                <input type="radio" name="import-mode" value="merge" checked />
+                Agregar / actualizar por ID
+              </label>
+              <label class="radio-row">
+                <input type="radio" name="import-mode" value="replace" />
+                Reemplazar nómina completa
+              </label>
+            </div>
+            <p id="import-resultado" class="import-resultado" hidden></p>
+          </section>
+
+          <section class="settings-block">
+            <h3>Nómina local</h3>
+            <p id="roster-count" class="hint">0 estudiantes en este dispositivo.</p>
+            <button type="button" class="btn btn-secondary" id="btn-demo">
+              Cargar datos demo (falsos)
+            </button>
+            <button type="button" class="btn btn-danger-ghost" id="btn-borrar-nomina">
+              Borrar nómina local
+            </button>
+          </section>
+
+          <section class="settings-block">
+            <h3>Privacidad</h3>
+            <p class="hint">
+              Esta app es solo local: IndexedDB en el navegador, sin servidor,
+              sin analytics y sin sincronización. Los registros de tarde se
+              borran al cambiar el día (zona America/El_Salvador).
+            </p>
+          </section>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog id="dialog-confirmar" class="sheet confirm-sheet">
+      <div class="sheet-inner">
+        <h2 id="confirm-titulo">Confirmar</h2>
+        <p id="confirm-mensaje"></p>
+        <div class="confirm-actions">
+          <button type="button" class="btn btn-secondary" id="confirm-cancelar">
+            Cancelar
+          </button>
+          <button type="button" class="btn btn-danger" id="confirm-aceptar">
+            Confirmar
+          </button>
+        </div>
+      </div>
+    </dialog>
+
+    <dialog id="dialog-primer-uso" class="sheet">
+      <div class="sheet-inner">
+        <h2>Bienvenida</h2>
+        <p>
+          No hay nómina todavía. Puedes cargar
+          <strong>datos demo falsos</strong> para probar, o importar tu CSV en
+          Ajustes.
+        </p>
+        <p class="hint warn">
+          Nunca uses datos reales de estudiantes en demos o capturas.
+        </p>
+        <div class="confirm-actions">
+          <button type="button" class="btn btn-secondary" id="primer-vacio">
+            Dejar vacía
+          </button>
+          <button type="button" class="btn btn-primary" id="primer-demo">
+            Cargar demo falsa
+          </button>
+        </div>
+      </div>
+    </dialog>
+
+    <script type="module" src="./src/main.js"></script>
+  </body>
+</html>

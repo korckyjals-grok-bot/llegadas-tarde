@@ -1,0 +1,23 @@
+{
+  "name": "llegadas-tarde",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "PWA local para registrar llegadas tarde de estudiantes (solo dispositivo)",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1 --port 43123",
+    "build": "vite build",
+    "preview": "vite preview --host 127.0.0.1 --port 43123",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:e2e": "playwright test",
+    "preview:e2e": "vite preview --host 127.0.0.1 --port 43124",
+    "test:e2e:sw": "E2E_SW=1 E2E_BASE_URL=http://127.0.0.1:43124/llegadas-tarde/ playwright test e2e/pwa-smoke.spec.js -g offline"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.55.0",
+    "jsdom": "^26.1.0",
+    "vite": "^6.3.5",
+    "vitest": "^3.2.4"
+  }
+}
