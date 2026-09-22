@@ -1,0 +1,32 @@
+{
+  "name": "Llegadas tarde",
+  "short_name": "Llegadas",
+  "description": "Registro local de llegadas tarde. Sin servidor.",
+  "start_url": "/llegadas-tarde/",
+  "scope": "/llegadas-tarde/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#e8f2ec",
+  "theme_color": "#0f3d2e",
+  "lang": "es",
+  "icons": [
+    {
+      "src": "/llegadas-tarde/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/llegadas-tarde/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/llegadas-tarde/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Llegadas">
+  <rect width="512" height="512" rx="96" fill="#0f3d2e"/>
+  <circle cx="256" cy="256" r="150" fill="none" stroke="#e8f2ec" stroke-width="28"/>
+  <path d="M256 140 v130 l88 52" fill="none" stroke="#c45c26" stroke-width="32" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
